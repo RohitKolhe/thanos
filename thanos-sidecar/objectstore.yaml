@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: helm-monitoring
+  name: objstore
+stringData:
+  objstore.yml: |-
+    type: S3
+    config:
+      bucket: prometheus-metrics
+      endpoint: 10.244.1.232:9000
+      insecure: true
+      access_key: minio
+      secret_key: minio123

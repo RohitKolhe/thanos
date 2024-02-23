@@ -1,0 +1,9 @@
+prometheus:
+  #thanos:
+  #  create: true //sidecar
+  prometheusSpec:
+    serviceMonitorNamespaceSelector:
+      matchLabels:
+        helm-monitoring: prometheus
+    remoteWrite:
+    - url: http://thanos-release-receive.helm-monitoring.svc.cluster.local:19291/api/v1/receive

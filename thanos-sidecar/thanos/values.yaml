@@ -1,0 +1,55 @@
+objstoreConfig: |-
+    type: S3
+    config:
+      bucket: thanos
+      endpoint: 10.244.1.232:9000
+      insecure: true
+      access_key: minio
+      secret_key: minio123
+query:
+  dnsDiscovery:
+    sidecarsService: prom-release-kube-promethe-prometheus-thanos
+    sidecarsNamespace: helm-monitoring
+bucketweb:
+  enabled: true
+#query:
+#  stores: []
+compactor:
+  ## @param compactor.enabled Enable/disable Thanos Compactor component
+  ##
+  enabled: true
+  retentionResolutionRaw: 30d
+  retentionResolution5m: 30d
+  retentionResolution1h: 10y
+storegateway:
+  ## @param storegateway.enabled Enable/disable Thanos Store Gateway component
+  ##
+  enabled: true
+receive:
+  ## @param receive.enabled Enable/disable Thanos Receive component
+  ##
+  enabled: false
+ruler:
+  enabled: true
+  alertmanagers:
+    - http://prom-release-kube-promethe-alertmanager.helm-monitoring.svc.cluster.local:9093
+  config: |-
+    groups:
+      - name: "metamonitoring"
+        rules:
+          - alert: "PrometheusDown"
+            expr: absent(up{prometheus="monitoring/kube-prometheus"})
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+minio:
+  enabled: false
+  auth:
+    rootUser: admin
+    rootPassword: admin
+  monitoringBuckets: thanos
+  accessKey:
+    password: minio
+  secretKey:
+    password: minio123

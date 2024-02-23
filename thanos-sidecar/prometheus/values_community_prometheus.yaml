@@ -1,0 +1,85 @@
+rbac:
+  create: true
+
+alertmanager:
+  enabled: false
+
+prometheus-pushgateway:
+  enabled: false
+
+prometheus-node-exporter:
+  enabled: false
+
+kube-state-metrics:
+  enabled: false
+
+initChownData:
+  resources:
+    limits:
+      memory: 16Mi
+      cpu: 50m
+    requests:
+      memory: 16Mi
+      cpu: 50m
+
+server:
+  extraArgs:
+    log.level: debug
+    storage.tsdb.min-block-duration: 2h # Don't change this, see docs/components/sidecar.md
+    storage.tsdb.max-block-duration: 2h # Don't change this, see docs/components/sidecar.md
+  retention: 4h
+  service:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9090"
+  statefulSet:
+    enabled: true
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10902"
+  sidecarContainers:
+    thanos-sidecar:
+      image: quay.io/thanos/thanos:v0.34.0
+      resources:
+        requests:
+          memory: "512Mi"
+      args:
+        - "sidecar"
+        - "--log.level=debug"
+        - "--tsdb.path=/data/"
+        - "--prometheus.url=http://127.0.0.1:9090"
+        - "--objstore.config-file=/conf/objstore.yml"
+      ports:
+        - name: sidecar-http
+          containerPort: 10902
+        - name: grpc
+          containerPort: 10901
+        - name: cluster
+          containerPort: 10900
+      volumeMounts:
+        - name: objstore
+          mountPath: /conf/objstore.yml
+          subPath: objstore.yml
+  #configPath: /etc/prometheus-shared/prometheus.yml
+  replicaCount: 1
+  persistentVolume:
+    size: 20Gi
+  #extraVolumes: # spec.template.spec.volumes
+  #  - name: prometheus-config-shared
+  #    emptyDir: {}
+  #extraVolumeMounts: # spec.template.spec.containers.volumeMounts for prometheus container
+  #  - name: prometheus-config-shared
+  #    mountPath: /etc/prometheus-shared/
+  resources:
+    requests:
+      memory: 1Gi
+  global:
+    scrape_interval: 5s
+    scrape_timeout: 4s
+    evaluation_interval: 5s
+  extraSecretMounts:
+    - name: objstore
+      secretName: objstore
+configmapReload:
+  prometheus:
+    enabled: false
