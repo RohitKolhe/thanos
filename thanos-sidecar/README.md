@@ -1,4 +1,4 @@
-# Thanos (Prometheus) Tutorial: Remote write
+# Thanos (Prometheus) Tutorial: Remote Read
 
 # Foobar
 
