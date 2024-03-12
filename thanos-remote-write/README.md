@@ -1,8 +1,9 @@
 # Thanos (Prometheus) Tutorial: Remote write
 
-# Foobar
 
 This project demonstrates a demo for deploying Prometheus and connecting it with a Thanos receiver. Additionally, the entire Thanos stack, including Receiver, Querier, Compactor, and Store Gateway, is deployed using Helm charts. Minio is utilized as the storage bucket for long-term storage of metrics data.
+
+![Alt text](ThanosRemoteWrite.svg)
 
 ## Deployment
 

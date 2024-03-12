@@ -1,8 +1,8 @@
 # Thanos (Prometheus) Tutorial: Remote Read
 
-# Foobar
-
 This project demonstrates a demo for deploying Prometheus and connecting it with a Thanos as sidecar pattern, is deployed using Helm charts. Minio is utilized as the storage bucket for long-term storage of metrics data.
+
+![Alt text](ThanosRemoteRead.svg)
 
 ## Deployment
 
